@@ -1,0 +1,22 @@
+{
+  "name": "orion",
+  "version": "1.0.0",
+  "description": "Planned Gemini client in electron.",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MineRobber9000/orion.git"
+  },
+  "author": "khuxkm fbexl",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MineRobber9000/orion/issues"
+  },
+  "homepage": "https://github.com/MineRobber9000/orion#readme",
+  "dependencies": {
+    "electron": "^13.1.7"
+  }
+}
