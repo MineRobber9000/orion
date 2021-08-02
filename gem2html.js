@@ -90,7 +90,8 @@ function gem2html(gemtext,charset) {
   }
   output+="</body></html>";
   output = output.replace(/<\/ul>\n<ul>\n/g,"");
-  console.log(output);
+  output = output.replace(/<\/blockquote>\n<blockquote>/g,"");
+  //console.log(output);
   return Buffer.from(output);
 }
 
