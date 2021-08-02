@@ -57,6 +57,18 @@ function gem2html(gemtext,charset) {
           // we have a link name
           output+="<p><a href='"+parts[0]+"'>"+parts[1].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
         }
+      } else if (line.slice(0,2)=="=:" && line.length>2) {
+        // this is the spartan-specific input link
+        // for right now we aren't even handling gemini input let alone spartan input
+        // so just treat it as a link in its own right
+        let parts = line.slice(2).replace(/^\s+/,"").split(/\s+(.+)/,2);
+        if (parts.length==1) {
+          // just the path/url, so just use that
+          output+="<p><a href='"+parts[0]+"'>"+parts[0].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
+        } else {
+          // we have a link name
+          output+="<p><a href='"+parts[0]+"'>"+parts[1].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
+        }
       } else if (line[0]==">") {
         output+="<blockquote><p>"+line.slice(1).replace(/^\s+/,"").replace("&","&amp;").replace("<","&lt;")+"</p></blockquote>";
       } else if (line[0]=="#") {
