@@ -75,6 +75,10 @@ function handle_gemini(req,cb) {
   const socket = tls.connect({host: host, port: port, rejectUnauthorized: false, servername: host}, function() {
     socket.write(requrl.format()+"\r\n");
   });
+  socket.on("error",(err)=>{
+    console.log(err);
+    cb({error: -104}); // connection failed;
+  });
   socket.setTimeout(5000);
   socket.on("timeout",()=>{ socket.end(); });
   let chunks = new Array();
@@ -154,6 +158,10 @@ function handle_spartan(req,cb) {
     // TODO: implement input
     socket.write([requrl.hostname,path,"0"].join(" ")+"\r\n");
   });
+  socket.on("error",(err)=>{
+    console.log(err);
+    cb({error: -104}); // connection failed;
+  });
   socket.setTimeout(5000);
   socket.on("timeout",()=>{ socket.end(); });
   let chunks = new Array();
@@ -207,6 +215,23 @@ function handle_spartan(req,cb) {
   // after 15 seconds total, force the socket to shut
   setTimeout(function() {socket.end();},15000);
 }
+
+electron.ipcMain.handle("report-error",async (_,url,error_description) => {
+  // un-dork-ify certain errors we expect to see.
+  if (error_description=="ERR_TOO_MANY_REDIRECTS") {
+    error_description = "The server attempted too many redirects.";
+  } else if (error_description=="INVALID_URL") {
+    error_description = "The URL was invalid.";
+  } else if (error_description=="INVALID_RESPONSE") {
+    error_description = "The server returned an invalid response.";
+  } else if (error_description=="RESPONSE_HEADERS_TOO_BIG") {
+    error_description = "The server either responded with a response header that was too big, or did not properly encode their response header.";
+  } else if (error_description=="ERR_CONNECTION_FAILED") {
+    error_description = "We couldn't contact the server. Are you sure you typed the domain correctly?";
+  }
+  await electron.dialog.showMessageBox({title:"Error",message:"Error loading "+url+": "+error_description,type:"error"});
+  return;
+});
 
 electron.app.whenReady().then(() => {
   createWindow()

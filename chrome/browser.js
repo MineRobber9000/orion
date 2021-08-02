@@ -1,3 +1,4 @@
+const {ipcRenderer} = require('electron');
 let backbutton = null;
 let forwardbutton = null;
 let omnibar = null;
@@ -78,11 +79,14 @@ function navigate(url, clearhistory) {
     webview = document.getElementsByTagName("webview")[0];
   }
   if (webview === null) return;
+  last_navigated = url;
   webview.loadURL(url).then(()=>{
     if (clearhistory) {
       webview.clearHistory();
     }
     update_navbuttons();
+  }).catch(function(err){
+    return; // handle error in webview error handler
   });
 }
 
@@ -99,12 +103,15 @@ function handle_omnibar_input_event(e) {
   }
 }
 
+let last_navigated = null;
+
 window.onload = function() {
   webview = document.getElementsByTagName("webview")[0];
   omnibar = document.getElementsByName("omnibar")[0];
   webview.addEventListener("did-navigate",function(){
     setTimeout(function() {
       omnibar.value = webview.src;
+      last_navigated = webview.src;
       document.title = webview.getTitle()+" - Orion Browser";
       update_navbuttons();
     },100);
@@ -114,5 +121,8 @@ window.onload = function() {
       omnibar.value = webview.src;
       update_navbuttons();
     },100);
+  });
+  webview.addEventListener("did-fail-load",function(ev){
+    ipcRenderer.invoke("report-error",last_navigated,ev.errorDescription).then(()=>{back();});
   });
 }
