@@ -1,10 +1,10 @@
 function gem2html(gemtext,charset) {
-  console.log(gemtext, charset);
+  //console.log(gemtext, charset);
   charset = charset || "utf8";
   let text = gemtext.toString(charset);
-  console.log(text);
+  //console.log(text);
   let lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
-  console.log(lines.length,"line(s)");
+  //console.log(lines.length,"line(s)");
   let pre = false;
   let pre_alt = "";
   let output = "<html><body>";
@@ -12,7 +12,7 @@ function gem2html(gemtext,charset) {
     output+="<p>"+lines[i].replace("&","&amp;").replace("<","&lt;")+"</p>";
   }
   output+="</body></html>";
-  console.log(output);
+  //console.log(output);
   return Buffer.from(output);
 }
 
