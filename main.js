@@ -1,8 +1,12 @@
 const electron = require("electron");
+const url = require("url");
+const path = require("path");
 
 function createWindow() {
-  const mainWindow = new electron.BrowserWindow({width: 800, height: 600});
-  mainWindow.loadFile("browser.html");
+  const mainWindow = new electron.BrowserWindow({width: 800, height: 600, webPreferences: {nodeIntegration:true,webviewTag:true,contextIsolation:false}, title: "Orion Browser", backgroundColor: "#fff"});
+  // TODO: implement the menu The Right Way(tm)
+  mainWindow.setMenu(null);
+  mainWindow.loadFile("chrome/browser.html");
 }
 
 electron.app.whenReady().then(() => {

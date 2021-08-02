@@ -1,0 +1,50 @@
+body, html {width: 100%; height: 100%; margin: 0;}
+
+#navbar {
+  height: 50px;
+  max-height: 50px;
+  display: flex;
+}
+
+#navbar a {
+  flex-basis: 50px;
+  color: black;
+  font-size: 32px;
+  text-align: center;
+  margin: auto;
+  height: 50px;
+  text-decoration: none;
+}
+
+#navbar a img {
+  height: 32px;
+  padding-top: 5px;
+}
+
+#navbar a[disabled] img {
+  filter: contrast(0);
+}
+
+#navbar a:not([disabled]):hover {
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjIiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgdmlld0JveD0iMCAwIDUwIDUwIiB3aWR0aD0iNTAiIGhlaWdodD0iNTAiPjxzdHlsZT4uc2hwMCB7IGZpbGwtb3BhY2l0eTogMC43NTtmaWxsOiAjYWFhYWFhIH08L3N0eWxlPjxwYXRoIGlkPSJCYWNrZ3JvdW5kIiBjbGFzcz0ic2hwMCIgZD0iTTI1IDUwQzExLjE3IDUwIDAgMzguODMgMCAyNUMwIDExLjE3IDExLjE3IDAgMjUgMEMzOC44MyAwIDUwIDExLjE3IDUwIDI1QzUwIDM4LjgzIDM4LjgzIDUwIDI1IDUwWiIgLz48L3N2Zz4=");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#navbar span {
+  flex-basis: 10px;
+}
+
+#navbar input[name=omnibar] {
+  flex-basis: 100%;
+  height: 40px;
+  margin: auto;
+}
+
+webview {
+  position: absolute;
+  left: 8px;
+  top: 58px;
+  right: 8px;
+  bottom: 8px;
+}

@@ -4,7 +4,8 @@
   "description": "Planned Gemini client in electron.",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "trace-warnings": "electron --trace-warnings ."
   },
   "repository": {
     "type": "git",

@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <title>Orion Browser</title>
+    <link rel="stylesheet" href="browser.css">
+    <meta http-equiv="Content-Security-Policy" value="default-src 'self';">
+    <script src="browser.js"></script>
+    <base href="./">
+  </head>
+  <body>
+    <div id="navbar">
+      <span></span>
+      <a onclick="back();" name="back" disabled><img src="arrow-left.svg"></a>
+      <a onclick="forward();" name="forward" disabled><img src="arrow-right.svg"></a>
+      <a onclick="refresh();" name="refresh"><img src="refresh.svg"></a>
+      <span></span>
+      <input name="omnibar" type="text" onkeypress="handle_omnibar_input_event(event);">
+      <span></span>
+    </div>
+    <div id="webviewcontainer">
+      <!-- webview default src is google until we have gemini handling -->
+      <webview src="https://google.com" webpreferences="contextIsolation=yes,nodeIntegration=no"></webview>
+    </div>
+  </body>
+</html>
