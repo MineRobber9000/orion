@@ -1,3 +1,19 @@
+const _ALPHABET = "0123456789abcdefghijklmnopqrstuvwxyz";
+function _rand_n() {
+  return Math.floor(Math.random()*(2**32));
+}
+function rand_id() {
+  let n = _rand_n();
+  let tmp = 0;
+  let id = "";
+  while (n>0) {
+    tmp = Math.floor(n/36);
+    id = _ALPHABET[n%36]+id;
+    n = tmp;
+  }
+  return id;
+}
+
 function gem2html(gemtext,charset) {
   //console.log(gemtext, charset);
   charset = charset || "utf8";
@@ -6,13 +22,53 @@ function gem2html(gemtext,charset) {
   let lines = text.split(/\r\n|[\n\v\f\r\x85\u2028\u2029]/);
   //console.log(lines.length,"line(s)");
   let pre = false;
-  let pre_alt = "";
-  let output = "<html><body>";
+  let pre_alt = false;
+  let output = "<html><head><style>p {margin-top: 0; margin-bottom: 0;}</style></head><body>";
+  let used_ids = new Array();
   for (let i=0;i<lines.length;i++) {
-    output+="<p>"+lines[i].replace("&","&amp;").replace("<","&lt;")+"</p>";
+    let line = lines[i];
+    if (pre) {
+      if (line.slice(0,3)=="```") {
+        output+="</pre>";
+        pre = false;
+        if (pre_alt) {
+          output+="\n</figure>";
+          pre_alt=false;
+        }
+      } else {
+        output+=line;
+      }
+    } else {
+      if (line.slice(0,3)=="```") {
+        if (line.length>3) {
+          let id = rand_id();
+          while (used_ids.indexOf(id)!==-1) id = rand_id();
+          output+="<figure role='img' aria-captioned-by='"+id+"'><figcaption id='"+id+"' style='clip: rect(0 0 0 0); clip-path: inset(50%); height: 1px; overflow: hidden; position: absolute; white-space: nowrap; width: 1px;'>"+line.slice(3)+"</figcaption>\n";
+          pre_alt=true;
+        }
+        pre=true;
+        output+="<pre>";
+      } else if (line.slice(0,2)=="=>" && line.length>2) {
+        let parts = line.slice(2).replace(/^\s+/,"").split(/\s+(.+)/,2);
+        if (parts.length==1) {
+          // just the path/url, so just use that
+          output+="<p><a href='"+parts[0]+"'>"+parts[0].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
+        } else {
+          // we have a link name
+          output+="<p><a href='"+parts[0]+"'>"+parts[1].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
+        }
+      } else {
+        if (line.length>0) {
+          output+="<p>"+line.replace("&","&amp;").replace("<","&lt;")+"</p>";
+        } else {
+          output+="<p><br></p>";
+        }
+      }
+    }
+    output+="\n"
   }
   output+="</body></html>";
-  //console.log(output);
+  console.log(output);
   return Buffer.from(output);
 }
 
