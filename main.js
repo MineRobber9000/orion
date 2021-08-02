@@ -3,6 +3,7 @@ const url = require("url");
 const path = require("path");
 const tls = require("tls");
 const net = require("net");
+const gem2html = require("./gem2html");
 const GEMINI_ERR_TO_HTTP = {
   // x0 codes don't really map to HTTP status codes, so just fall back on 200
   "40": 200,
@@ -106,11 +107,12 @@ function handle_gemini(req,cb) {
     if (parts[0][0] === "2") {
       if (parts[1].match(/^text\/gemini/)) {
         // TODO: handle text/gemini in a standard fashion as opposed to just treating it as plaintext
-        resp.headers = {"Content-Type":parts[1].replace(/^text\/gemini/,"text/plain"),"Content-Length":data.length.toString()};
+        resp.data = gem2html.gem2html(data,gem2html.getCharset(parts[1]));
+        resp.headers = {"Content-Type":"text/html; charset=utf-8","Content-Length":resp.data.length.toString()};
       } else {
         resp.headers = {"Content-Type":parts[1],"Content-Length":data.length.toString()};
+        resp.data = data;
       }
-      resp.data = data;
     } else if (parts[0][0] === "3") {
       resp.statusCode = 307; // Temporary Redirect
       resp.headers = {"Location":url.resolve(requrl,parts[1])};
@@ -189,11 +191,12 @@ function handle_spartan(req,cb) {
     if (parts[0] === "2") {
       if (parts[1].match(/^text\/gemini/)) {
         // TODO: handle text/gemini in a standard fashion as opposed to just treating it as plaintext
-        resp.headers = {"Content-Type":parts[1].replace(/^text\/gemini/,"text/plain"),"Content-Length":data.length.toString()};
+        resp.data = gem2html.gem2html(data,gem2html.getCharset(parts[1]));
+        resp.headers = {"Content-Type":"text/html; charset=utf-8","Content-Length":resp.data.length.toString()};
       } else {
         resp.headers = {"Content-Type":parts[1],"Content-Length":data.length.toString()};
+        resp.data = data;
       }
-      resp.data = data;
     } else if (parts[0] === "3") {
       resp.statusCode = 307; // Temporary Redirect
       requrl.path = parts[1]; // spartan redirects only use the path
