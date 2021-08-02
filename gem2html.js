@@ -23,7 +23,7 @@ function gem2html(gemtext,charset) {
   //console.log(lines.length,"line(s)");
   let pre = false;
   let pre_alt = false;
-  let output = "<html><head><style>p {margin-top: 0; margin-bottom: 0;}</style></head><body>";
+  let output = "<html><head><style>p, h1, h2, h3 {margin-top: 0; margin-bottom: 0;} blockquote {margin-inline-start: 1.5em; padding: .75em; border-inline-start: 2px solid #999;}</style></head><body>";
   let used_ids = new Array();
   for (let i=0;i<lines.length;i++) {
     let line = lines[i];
@@ -57,6 +57,15 @@ function gem2html(gemtext,charset) {
           // we have a link name
           output+="<p><a href='"+parts[0]+"'>"+parts[1].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
         }
+      } else if (line[0]==">") {
+        output+="<blockquote><p>"+line.slice(1).replace(/^\s+/,"").replace("&","&amp;").replace("<","&lt;")+"</p></blockquote>";
+      } else if (line[0]=="#") {
+        let level = 1;
+        if (line.slice(0,2)=="##") level=2;
+        if (line.slice(0,3)=="###") level=3;
+        output+="<h"+level+">"+line.slice(level).replace(/^\s+/,"").replace("&","&amp;").replace("<","&lt;")+"</h"+level+">";
+      } else if (line.slice(0,2)=="* ") {
+        output+="<ul>\n<li>"+line.slice(2).replace("&","&amp;").replace("<","&lt;")+"</li>\n</ul>"
       } else {
         if (line.length>0) {
           output+="<p>"+line.replace("&","&amp;").replace("<","&lt;")+"</p>";
@@ -68,6 +77,7 @@ function gem2html(gemtext,charset) {
     output+="\n"
   }
   output+="</body></html>";
+  output = output.replace(/<\/ul>\n<ul>\n/g,"");
   console.log(output);
   return Buffer.from(output);
 }
