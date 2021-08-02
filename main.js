@@ -49,7 +49,7 @@ function createWindow() {
   const mainWindow = new electron.BrowserWindow({width: 800, height: 600, webPreferences: {nodeIntegration:true,webviewTag:true,contextIsolation:false}, title: "Orion Browser", backgroundColor: "#fff"});
   // TODO: implement the menu The Right Way(tm)
   mainWindow.setMenu(null);
-  mainWindow.openDevTools();
+  //mainWindow.openDevTools();
   mainWindow.loadFile("chrome/browser.html");
 }
 
