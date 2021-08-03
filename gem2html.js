@@ -36,7 +36,7 @@ function gem2html(gemtext,charset) {
           pre_alt=false;
         }
       } else {
-        output+=line;
+        output+=line.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
       }
     } else {
       if (line.slice(0,3)=="```") {
@@ -52,10 +52,10 @@ function gem2html(gemtext,charset) {
         let parts = line.slice(2).replace(/^\s+/,"").split(/\s+(.+)/,2);
         if (parts.length==1) {
           // just the path/url, so just use that
-          output+="<p><a href='"+parts[0]+"'>"+parts[0].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
+          output+="<p><a href='"+parts[0]+"'>"+parts[0].replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</a></p>";
         } else {
           // we have a link name
-          output+="<p><a href='"+parts[0]+"'>"+parts[1].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
+          output+="<p><a href='"+parts[0]+"'>"+parts[1].replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</a></p>";
         }
       } else if (line.slice(0,2)=="=:" && line.length>2) {
         // this is the spartan-specific input link
@@ -64,23 +64,23 @@ function gem2html(gemtext,charset) {
         let parts = line.slice(2).replace(/^\s+/,"").split(/\s+(.+)/,2);
         if (parts.length==1) {
           // just the path/url, so just use that
-          output+="<p><a href='"+parts[0]+"'>"+parts[0].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
+          output+="<p><a href='"+parts[0]+"'>"+parts[0].replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</a></p>";
         } else {
           // we have a link name
-          output+="<p><a href='"+parts[0]+"'>"+parts[1].replace("&","&amp;").replace("<","&lt;")+"</a></p>";
+          output+="<p><a href='"+parts[0]+"'>"+parts[1].replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</a></p>";
         }
-      } else if (line[0]==">") {
-        output+="<blockquote><p>"+line.slice(1).replace(/^\s+/,"").replace("&","&amp;").replace("<","&lt;")+"</p></blockquote>";
+      } else if (line[0]==/>/g) {
+        output+="<blockquote><p>"+line.slice(1).replace(/^\s+/,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p></blockquote>";
       } else if (line[0]=="#") {
         let level = 1;
         if (line.slice(0,2)=="##") level=2;
         if (line.slice(0,3)=="###") level=3;
-        output+="<h"+level+">"+line.slice(level).replace(/^\s+/,"").replace("&","&amp;").replace("<","&lt;")+"</h"+level+">";
+        output+="<h"+level+">"+line.slice(level).replace(/^\s+/,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</h"+level+">";
       } else if (line.slice(0,2)=="* ") {
-        output+="<ul>\n<li>"+line.slice(2).replace("&","&amp;").replace("<","&lt;")+"</li>\n</ul>"
+        output+="<ul>\n<li>"+line.slice(2).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</li>\n</ul>"
       } else {
         if (line.length>0) {
-          output+="<p>"+line.replace("&","&amp;").replace("<","&lt;")+"</p>";
+          output+="<p>"+line.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p>";
         } else {
           output+="<p><br></p>";
         }
@@ -91,7 +91,7 @@ function gem2html(gemtext,charset) {
   output+="</body></html>";
   output = output.replace(/<\/ul>\n<ul>\n/g,"");
   output = output.replace(/<\/blockquote>\n<blockquote>/g,"");
-  //console.log(output);
+  console.log(output);
   return Buffer.from(output);
 }
 
