@@ -17,3 +17,5 @@ Gemini/Spartan client in Electron
  - [ ] Top menu
  - [ ] Bookmarks
  - [ ] Config screen
+ - [ ] Custom CSS theming (for UI and pages)
+     - [ ] Per-capsule theming?
