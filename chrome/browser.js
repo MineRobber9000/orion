@@ -1,4 +1,4 @@
-const {ipcRenderer} = require('electron');
+const {ipcRenderer, shell} = require('electron');
 let backbutton = null;
 let forwardbutton = null;
 let omnibar = null;
@@ -79,6 +79,18 @@ function navigate(url, clearhistory) {
     webview = document.getElementsByTagName("webview")[0];
   }
   if (webview === null) return;
+  if (omnibar === null && document.getElementsByName("omnibar").length>0) {
+    omnibar = document.getElementsByTagName("omnibar")[0];
+  }
+  if (webview === null) return;
+  if (!url.match(/^(gemini|spartan):/)) {
+    // Orion only claims to handle gemini and spartan
+    // It *can* do HTTP(S), by virtue of being Electron, but it's not good at it
+    // Plus, you should really use your web browser of choice for web links.
+    shell.openExternal(url);
+    omnibar.value = webview.src;
+    return
+  }
   last_navigated = url;
   webview.loadURL(url).then(()=>{
     if (clearhistory) {
@@ -108,6 +120,18 @@ let last_navigated = null;
 window.onload = function() {
   webview = document.getElementsByTagName("webview")[0];
   omnibar = document.getElementsByName("omnibar")[0];
+  webview.addEventListener("will-navigate",function(ev){
+    console.log("WILL-NAVIGATE");
+    if (!ev.url.match(/^(gemini|spartan):/)) {
+      // Orion only claims to handle gemini and spartan
+      // It *can* do HTTP(S), by virtue of being Electron, but it's not good at it
+      // Plus, you should really use your web browser of choice for web links.
+      console.log("ATTEMPTING TO BLOCK NAVIGATION");
+      webview.stop();
+      shell.openExternal(ev.url);
+      omnibar.value = webview.src;
+    }
+  });
   webview.addEventListener("did-navigate",function(){
     setTimeout(function() {
       omnibar.value = webview.src;
