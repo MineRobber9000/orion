@@ -96,8 +96,8 @@ function handle_omnibar_input_event(e) {
     // special case searches eventually, for now we'll just navigate there
     let url = omnibar.value;
     if (!url.match(/^([A-Za-z][A-Za-z0-9+\-]*):\/\//)) {
-      // append default scheme (in this case HTTPS, once we actually have gemini working, gemini)
-      url = "https://"+url
+      // append default scheme (gemini)
+      url = "gemini://"+url
     }
     navigate(url);
   }
