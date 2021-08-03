@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/MineRobber9000/orion#readme",
   "dependencies": {
-    "electron": "^13.1.7"
+    "electron": "^13.1.7",
+    "electron-prompt": "^1.6.2"
   }
 }

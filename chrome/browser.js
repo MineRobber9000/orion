@@ -125,4 +125,11 @@ window.onload = function() {
   webview.addEventListener("did-fail-load",function(ev){
     ipcRenderer.invoke("report-error",last_navigated,ev.errorDescription).then(()=>{back();});
   });
+  ipcRenderer.on("navigate",function(ev,url) {
+    omnibar.value = url;
+    let fake_input_event = {};
+    fake_input_event.keyCode=13;
+    fake_input_event.preventDefault=function() {};
+    handle_omnibar_input_event(fake_input_event);
+  });
 }

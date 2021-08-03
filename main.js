@@ -4,6 +4,7 @@ const path = require("path");
 const tls = require("tls");
 const net = require("net");
 const gem2html = require("./gem2html");
+const prompt = require("electron-prompt");
 const GEMINI_ERR_TO_HTTP = {
   // x0 codes don't really map to HTTP status codes, so just fall back on 200
   "40": 200,
@@ -46,8 +47,11 @@ const GEMINI_ERR_TO_STR = {
   "59": "59 Bad Request"
 };
 
+let mainWindowWebContentsId = null;
+
 function createWindow() {
   const mainWindow = new electron.BrowserWindow({width: 800, height: 600, webPreferences: {nodeIntegration:true,webviewTag:true,contextIsolation:false}, title: "Orion Browser", backgroundColor: "#fff"});
+  mainWindowWebContentsId = mainWindow.webContents.id;
   // TODO: implement the menu The Right Way(tm)
   mainWindow.setMenu(null);
   //mainWindow.openDevTools();
@@ -104,7 +108,18 @@ function handle_gemini(req,cb) {
       cb({error:320}); //INVALID_RESPONSE
       return;
     }
-    if (parts[0][0] === "2") {
+    if (parts[0][0] === "1") {
+      resp.data = Buffer.from(requrl.format()+" wants input");
+      resp.headers = {"Content-Type":"text/plain","Content-Length":resp.data.length.toString()};
+      let label = parts[1].replace("&","&amp;").replace("<","&lt;");
+      if (parts[0]==="11") label+="<br>(make sure nobody's looking over your shoulder)";
+      prompt({title:"Input",label:label,useHtmlLabel:true,width:400,height:250,minWidth:400,minHeight:250}).then((r)=>{
+        if (r===null) return;
+        if (mainWindowWebContentsId===null) return;
+        requrl.search = encodeURI(r);
+        electron.webContents.fromId(mainWindowWebContentsId).send("navigate",requrl.format());
+      });
+    } else if (parts[0][0] === "2") {
       if (parts[1].match(/^text\/gemini/)) {
         // TODO: handle text/gemini in a standard fashion as opposed to just treating it as plaintext
         resp.data = gem2html.gem2html(data,gem2html.getCharset(parts[1]));
