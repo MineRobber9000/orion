@@ -2,7 +2,7 @@
 
 ![orion logo. a red pixelart O has 3 white dots inside of it, representing the stars in Orion's belt.](build/icon.png)
 
-Gemini/Spartan client in Electron
+Gemini/Spartan client in Electron.
 
 ## Features
 
