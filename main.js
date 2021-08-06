@@ -147,9 +147,11 @@ function handle_gemini(req,cb) {
       resp.headers = {"Content-Type":"text/html; charset=utf-8","Content-Length":resp.data.length.toString()};
     } else if (parts[0][0] === "6") {
       resp.data = Buffer.from("<title>"+header+"</title><h1>Certificate Error</h1><p>The capsule in question wants a client certificate. At this time, Orion does not handle client certificates.</p>");
+      resp.headers = {"Content-Type":"text/html; charset=utf-8","Content-Length":resp.data.length.toString()};
     } else {
       resp.error = -320; // INVALID_RESPONSE
     }
+    resp.headers["Content-Security-Policy"] = "default-src *; script-src none; object-src none";
     cb(resp);
   });
   // after 15 seconds total, force the socket to shut
@@ -228,6 +230,7 @@ function handle_spartan(req,cb) {
     } else {
       resp.error = -320; // INVALID_RESPONSE
     }
+    resp.headers["Content-Security-Policy"] = "default-src *; script-src none; object-src none";
     cb(resp);
   });
   // after 15 seconds total, force the socket to shut
