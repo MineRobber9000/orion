@@ -121,7 +121,6 @@ function handle_gemini(req,cb) {
       });
     } else if (parts[0][0] === "2") {
       if (parts[1].match(/^text\/gemini/)) {
-        // TODO: handle text/gemini in a standard fashion as opposed to just treating it as plaintext
         resp.data = gem2html.gem2html(data,gem2html.getCharset(parts[1]));
         resp.headers = {"Content-Type":"text/html; charset=utf-8","Content-Length":resp.data.length.toString()};
       } else {
@@ -207,7 +206,6 @@ function handle_spartan(req,cb) {
     }
     if (parts[0] === "2") {
       if (parts[1].match(/^text\/gemini/)) {
-        // TODO: handle text/gemini in a standard fashion as opposed to just treating it as plaintext
         resp.data = gem2html.gem2html(data,gem2html.getCharset(parts[1]));
         resp.headers = {"Content-Type":"text/html; charset=utf-8","Content-Length":resp.data.length.toString()};
       } else {
