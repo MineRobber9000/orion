@@ -15,7 +15,7 @@ Gemini/Spartan client in Electron.
      - [x] Basic line types
          - [x] Preformatted alt text
      - [x] Advanced line types
-     - [ ] Correctly render spartan input links
+     - [x] Correctly render spartan input links
  - [ ] Top menu
  - [ ] Bookmarks
  - [ ] Config screen
