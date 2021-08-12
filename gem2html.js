@@ -62,13 +62,15 @@ function gem2html(gemtext,charset) {
         // for right now we aren't even handling gemini input let alone spartan input
         // so just treat it as a link in its own right
         let parts = line.slice(2).replace(/^\s+/,"").split(/\s+(.+)/,2);
+        let path, name;
         if (parts.length==1) {
-          // just the path/url, so just use that
-          output+="<p><a href='"+parts[0]+"'>"+parts[0].replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</a></p>";
+          path = parts[0];
+          name = "Submit input to path "+parts[0];
         } else {
-          // we have a link name
-          output+="<p><a href='"+parts[0]+"'>"+parts[1].replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</a></p>";
+          path = parts[0];
+          name = parts[1];
         }
+        output+="<form action=\""+path+"\" method=\"POST\" enctype=\"multipart/form-data\"><p>"+name.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p><p><label for='textinput'>Text input: </label><input type='text' name='textinput' /></p><p><label for='fileinput'>File input: </label><input type='file' name='fileinput' /></p><p><button type='submit'>Submit</button></p></form>";
       } else if (line[0]==">") {
         output+="<blockquote><p>"+line.slice(1).replace(/^\s+/,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p></blockquote>";
       } else if (line[0]=="#") {
@@ -90,7 +92,7 @@ function gem2html(gemtext,charset) {
   }
   output+="</body></html>";
   output = output.replace(/<\/ul>\n<ul>\n/g,"");
-  console.log(output);
+  //console.log(output);
   return Buffer.from(output);
 }
 
