@@ -69,7 +69,7 @@ function gem2html(gemtext,charset) {
           // we have a link name
           output+="<p><a href='"+parts[0]+"'>"+parts[1].replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</a></p>";
         }
-      } else if (line[0]==/>/g) {
+      } else if (line[0]==">") {
         output+="<blockquote><p>"+line.slice(1).replace(/^\s+/,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p></blockquote>";
       } else if (line[0]=="#") {
         let level = 1;
@@ -90,7 +90,6 @@ function gem2html(gemtext,charset) {
   }
   output+="</body></html>";
   output = output.replace(/<\/ul>\n<ul>\n/g,"");
-  output = output.replace(/<\/blockquote>\n<blockquote>/g,"");
   console.log(output);
   return Buffer.from(output);
 }
