@@ -11,6 +11,8 @@ Gemini/Spartan client in Electron.
      - [ ] Handle client certificates
  - [x] Can make spartan requests
      - [ ] Handle spartan input links
+         - [x] Text input
+         - [ ] File input (currently not working)
  - [x] Render gemtext
      - [x] Basic line types
          - [x] Preformatted alt text

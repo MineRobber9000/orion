@@ -5,6 +5,7 @@ const tls = require("tls");
 const net = require("net");
 const gem2html = require("./gem2html");
 const prompt = require("electron-prompt");
+const multiparse = require("./multipart");
 const GEMINI_ERR_TO_HTTP = {
   // x0 codes don't really map to HTTP status codes, so just fall back on 200
   "40": 200,
@@ -171,10 +172,20 @@ function handle_spartan(req,cb) {
   }
   let host = requrl.hostname;
   let port = parseInt(requrl.port) || 300;
+  let input = Buffer.alloc(0);
+  if (req.uploadData !== undefined) {
+    let multiparts = multiparse(req.headers,req.uploadData);
+    if (multiparts.fileinput !== undefined) {
+      input = Buffer.concat([input,multiparts.fileinput]);
+    } else if (multiparts.textinput !== undefined) {
+      input = Buffer.concat([input,multiparts.textinput]);
+    }
+  }
   const socket = net.connect({host: host, port: port}, function() {
     let path = requrl.path || "/";
     // TODO: implement input
-    socket.write([requrl.hostname,path,"0"].join(" ")+"\r\n");
+    socket.write([requrl.hostname,path,input.length.toString()].join(" ")+"\r\n");
+    socket.write(input);
   });
   socket.on("error",(err)=>{
     console.log(err);
@@ -235,6 +246,11 @@ function handle_spartan(req,cb) {
   setTimeout(function() {socket.end();},15000);
 }
 
+function test_spartan(req,cb) {
+  console.log(JSON.stringify(req));
+  handle_spartan(req,cb);
+}
+
 electron.ipcMain.handle("report-error",async (_,url,error_description) => {
   // un-dork-ify certain errors we expect to see.
   if (error_description=="ERR_TOO_MANY_REDIRECTS") {
@@ -256,7 +272,7 @@ electron.app.whenReady().then(() => {
   createWindow()
 
   electron.protocol.registerBufferProtocol("gemini",handle_gemini);
-  electron.protocol.registerBufferProtocol("spartan",handle_spartan);
+  electron.protocol.registerBufferProtocol("spartan",test_spartan);
 
   electron.app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the dock icon is clicked and there are no other windows open.
