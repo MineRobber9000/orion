@@ -10,7 +10,7 @@ module.exports = function(headers, uploadData) {
     // we can't handle non-form-data
     return {};
   }
-  let boundary = Buffer.from("--"+parsed[2].boundary+"\r\n","ascii");
+  let boundary = Buffer.from("--"+parsed[2].boundary,"ascii");
   // the return value
   let rv = {};
   // buf will eventually contain the full input
@@ -33,7 +33,7 @@ module.exports = function(headers, uploadData) {
   i = buf.indexOf(boundary);
   while (i!==-1) {
     let pre = buf.slice(0,i);
-    buf = buf.slice(i+boundary.length);
+    buf = buf.slice(i+boundary.length+2);
     if (pre.length>0) {
       let int_headers = {};
       let int_i = pre.indexOf("\r\n");
@@ -56,7 +56,7 @@ module.exports = function(headers, uploadData) {
       // if a filename is given, then it's a file input, keep it as a buffer
       // if no filename is given, then it's text input, decode that shit
       let contdisp = mimeparse("nonsense/"+int_headers["Content-Disposition"]);
-      rv[contdisp[2].name]=pre;
+      rv[contdisp[2].name]=pre.slice(0,-2);
     }
     i = buf.indexOf(boundary);
   }
