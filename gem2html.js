@@ -61,8 +61,6 @@ function gem2html(gemtext,charset) {
         }
       } else if (line.slice(0,2)=="=:" && line.length>2) {
         // this is the spartan-specific input link
-        // for right now we aren't even handling gemini input let alone spartan input
-        // so just treat it as a link in its own right
         let parts = line.slice(2).replace(/^\s+/,"").split(/\s+(.+)/,2);
         let path, name;
         if (parts.length==1) {
@@ -72,7 +70,7 @@ function gem2html(gemtext,charset) {
           path = parts[0];
           name = parts[1];
         }
-        output+="<form action=\""+path+"\" method=\"POST\" enctype=\"multipart/form-data\"><p>"+name.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p><p><label for='textinput'>Text input: </label><input type='text' name='textinput' /></p><p><label for='fileinput'>File input: </label><input type='file' name='fileinput' /></p><p><button type='submit'>Submit</button></p></form>";
+        output+="<form action=\""+path+"\" method=\"POST\" enctype=\"multipart/form-data\"><p>"+name.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p><p><label for='textinput'>Text input: </label><input type='text' name='textinput' /></p><p><button type='submit'>Submit</button></p></form>";
       } else if (line[0]==">") {
         output+="<blockquote><p>"+line.slice(1).replace(/^\s+/,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p></blockquote>";
       } else if (line[0]=="#") {
