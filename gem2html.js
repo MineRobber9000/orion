@@ -70,7 +70,7 @@ function gem2html(gemtext,charset) {
           path = parts[0];
           name = parts[1];
         }
-        output+="<form action=\""+path+"\" method=\"POST\" enctype=\"multipart/form-data\"><p>"+name.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p><p><label for='textinput'>Text input: </label><input type='text' name='textinput' /></p><p><button type='submit'>Submit</button></p></form>";
+        output+="<form action=\""+path+"\" method=\"POST\" enctype=\"multipart/form-data\"><p>"+name.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p><p><label for='textinput'>Text input: </label><textarea rows=5 cols=80 name='textinput'></textarea></p><p><button type='submit'>Submit</button></p></form>";
       } else if (line[0]==">") {
         output+="<blockquote><p>"+line.slice(1).replace(/^\s+/,"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</p></blockquote>";
       } else if (line[0]=="#") {
